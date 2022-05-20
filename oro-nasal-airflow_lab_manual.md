@@ -4,8 +4,8 @@
 1. If you want to record both oral and nasal airflow simultaneously, make sure that the mesh screen plugs are in place for both the oral and nasal chambers (rather than the flat plastic grey plugs which completely obstruct airflow). See p.6-7 of the 
   * In the event that you want to record *only* oral airflow or nasal airflow (and not both), the chamber associated with airflow measurement should have the mesh screen plugs inserted, and the other chamber shold have the flat plastic plugs in place. [verify this]
  
- 	![insert two pictures here showing the correct plugs](mask-mesh-plugs.jpg)
-	![insert two pictures here showing the correct plugs](mask-mesh-plugs2.jpg)
+	<img src="mask-mesh-plugs.jpg" width="200"><img src="mask-mesh-plugs2.jpg" width="200">
+ 	
  
 2. Different pressure transducers are used for measuring oral vs. nasal airflow:
   * *Nasal* airflow is measured using the *yellow* PT-2E pressure transducer.
