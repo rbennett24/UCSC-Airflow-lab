@@ -1,16 +1,3 @@
----
-title: "Oro-nasal Airflow Lab Manual"
-date: "UCSC Linguistics"
-output:
-  html_document:
-    highlight: tango
-    theme: readable
-  pdf_document: default
----
-https://people.ucsc.edu/~rbennett/
-https://github.com/rbennett24/UCSC-Airflow-lab
-***
-***
 # <todo>TO DO</todo>
 1. <todo>**Write up separate guide to making nasal pressure recordings using earbuds**</todo>
 2. <todo>**Clean up scripts, then post**</todo>
