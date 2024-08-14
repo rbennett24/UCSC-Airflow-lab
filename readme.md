@@ -7,53 +7,8 @@ output:
     theme: readable
   pdf_document: default
 ---
-<style type="text/css">
-body, td, code.r, pre {
-   font-size: 20px;
-   color: #0c4380;
-   <!--font-weight: bold;-->
-}
-h1,h2,h3 {
-  color: black;
-}
-h1 {
-  font-size: 32px;
-  font-variant: small-caps;
-}
-h2 {
-  font-size: 24px;
-}
-
-h3 {
-  font-size: 20px;
-  font-style: italic;
-}
-li > ul {
-  padding-bottom: 0.5em;
-}
-del {
-  color: grey;
-  font-weight: normal;
-}
-sc {
-  font-variant: small-caps;
-  font-weight: normal;
-}
-todo {
-  font-variant: small-caps;
-  font-weight: bold;
-  color: red;
-}
-
-
-</style>
-
 https://people.ucsc.edu/~rbennett/
-
 https://github.com/rbennett24/UCSC-Airflow-lab
-
-<!-- https://www.markdownguide.org/basic-syntax/ -->
-
 ***
 ***
 # <todo>TO DO</todo>
