@@ -201,11 +201,11 @@ showColor<-function(pal){
 
 ##########
 # Where are the raw airflow and .TextGrid files located?
-computer = "Tiamat"
+computer = ""
 
-mixtecdir <- paste0("C:/Users/",computer,"/Dropbox/Research/Latinamerica_Misc/Mixtec_nasality/Natalia_and_Roselia_Glossa/Extracted_files/")
+mixtecdir <- paste0("C:/Users/",computer,"")
 
-aingaedir <- paste0("C:/Users/",computer,"/Dropbox/Research/Latinamerica_Misc/A7ingae/2023_field_trip/Saved_files/Forced_alignment/Handcorrected_data/Files_for_analysis/Extracted_files/")
+aingaedir <- paste0("C:/Users/",computer,"")
 
 filedir <- aingaedir # Select which directory you'd like to use
 
@@ -220,7 +220,7 @@ setwd(filedir)
 
 ##########
 # Load in functions that this script depends on.
-scriptFolder <- paste0("C:/Users/",computer,"/Dropbox/Research/Nasality/R_scripts/")
+scriptFolder <- paste0("C:/Users/",computer,"")
 source(paste0(scriptFolder,"readIntensity.R")) # For reading Praat .Intensity files
 source(paste0(scriptFolder,"df_to_intensity.R")) # For writing Praat .Intensity files
 
