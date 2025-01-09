@@ -1,6 +1,14 @@
+***
+Generally, you'll run scripts in the following order:
+1. save_airflow_inputs.Praat
+2. airflow_audio_processing.R (which depends on readIntensity.R and df_to_intensity.R)
+3. measure_nasalance_traces.Praat
+
+***
+***
 # <todo>TO DO</todo>
 1. <todo>**Write up separate guide to making nasal pressure recordings using earbuds**</todo>
-2. <todo>**Clean up scripts, then post**</todo>
+2. <todo>**Keep cleaning up and updating scripts**</todo>
 3. <todo>**Write a comparable manual for recording intra-oral airpressure using tubes**</todo>
 <!-- 4. <todo>come to a better understanding of what modulation does, and whether you can/should do without it.</todo> -->
 <!-- 6. <todo>**PRESSURE TO FLOW CONVERSION?? No, the GE manual for the mask is clear that you're already measuring flow, there's a different transducer that measures pressure (the blue one), I guess?**</todo> -->
@@ -385,7 +393,10 @@ If using Audacity, make sure to save the project **and** export to .wav, adding 
 # Annotating a recording
 Recordings should be annotated using [Praat](https://www.fon.hum.uva.nl/praat/) TextGrids.
 
-We recommend using the [Praat](https://www.fon.hum.uva.nl/praat/) script [twochannel_mixdown_textgrids.Praat](./Scripts/Praat_scripts/twochannel_mixdown_textgrids.Praat) to generate TextGrids. This script will also process the original two-channel airflow recording into an audio file with (i) a mono mixdown of both airflow channels, combined into a single channel (as channel 1), and (i) the original oral airflow channel (as channel 2). This makes it easier to do segmentation than when working with oral and nasal airflow channels separately.
+# <todo>TO DO</todo>
+<todo>**Flesh this out in more detail**</todo>
+
+<!-- We recommend using the [Praat](https://www.fon.hum.uva.nl/praat/) script [twochannel_mixdown_textgrids.Praat](./Scripts/Praat_scripts/twochannel_mixdown_textgrids.Praat) to generate TextGrids. This script will also process the original two-channel airflow recording into an audio file with (i) a mono mixdown of both airflow channels, combined into a single channel (as channel 1), and (i) the original oral airflow channel (as channel 2). This makes it easier to do segmentation than when working with oral and nasal airflow channels separately.
 
 # <todo>Do we want to talk about how to time-align audio and nasality recordings? Probably doesn't matter for anything except TextGrids. I guess the workflow could be to code the audio recording, calculate a time lag, and generate a nasal airflow textgrid to check.</todo>
 
@@ -401,7 +412,7 @@ We recommend using the [Praat](https://www.fon.hum.uva.nl/praat/) script [twocha
 
 <todo>**Should this script be updated to mark non-silent intervals?**</todo>
 
-
+ -->
 ***
 ***
 # Processing a recording for analysis
