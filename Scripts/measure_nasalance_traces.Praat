@@ -21,24 +21,30 @@
 
 ################
 form Analyze nasalance .Intensity files and corresponding TextGrids.
+
+	comment Are you working with raw (normalized) airflow/intensity and Praat-based nasalance, or LPF variants?
+		optionmenu NasalanceType: 1
+			option: "Praat"
+			option: "LPF"
+
 	comment Where are the input (normalized) nasalance .Intensity files?
-		sentence nasFiles C:\Users\Tiamat\Dropbox\Research\Latinamerica_Misc\A7ingae\2023_field_trip\Saved_files\Forced_alignment\Handcorrected_data\Files_for_analysis\Extracted_files\Nasalance_files\
+		sentence nasFiles 
 
 	comment Where are the original (normalized) oral + nasal airflow .Intensity files that nasalance was derived from?
-		sentence airflowFiles C:\Users\Tiamat\Dropbox\Research\Latinamerica_Misc\A7ingae\2023_field_trip\Saved_files\Forced_alignment\Handcorrected_data\Files_for_analysis\Extracted_files\Normalized_airflow\
+		sentence airflowFiles 
 	
 	comment Which channel of the original (normalized) oral + nasal airflow .Intensity files is the ORAL channel?
 		integer oralChan 1
 	
 	comment Where are the corresponding TextGrids?
-		sentence tgFiles C:\Users\Tiamat\Dropbox\Research\Latinamerica_Misc\A7ingae\2023_field_trip\Saved_files\Forced_alignment\Handcorrected_data\Files_for_analysis\Extracted_files\
+		sentence tgFiles 
 
 	comment What tier are the target segments on?
 
 		integer seg_tier 2
 	
 	comment Where do you want to save the output text files?
-		sentence outDir C:\Users\Tiamat\Dropbox\Research\Latinamerica_Misc\A7ingae\2023_field_trip\Saved_files\Forced_alignment\Handcorrected_data\Files_for_analysis\Extracted_files\
+		sentence outDir 
 	
 	comment For time-normalized measurements: how many measurements per segment?
 		integer normSlices 17
@@ -139,7 +145,12 @@ for k from 1 to numfile
 	nasalance = Read from file: "'nasFiles$''fstr$'"
 	
 	# Get filename stem
-	filestem$ = replace$("'fstr$'", "_nasalance.Intensity", "", 0)
+	if "'nasalanceType$'" = "LPF"
+		filestem$ = replace$("'fstr$'", "_LPF_nasalance_normalized.Intensity", "", 0)
+	else
+		filestem$ = replace$("'fstr$'", "_nasalance.Intensity", "", 0)
+	endif
+	
 	
 	# Read in corresponding TextGrid file (and convert to unicode)
 	tgname$ = "'filestem$'.TextGrid"
@@ -147,7 +158,11 @@ for k from 1 to numfile
 	Convert to Unicode
 	
 	# Read in corresponding oral airflow file.
-	oralname$ = "'filestem$'_ch'oralChan'_normalized.Intensity"
+	if "'nasalanceType$'" = "LPF"
+		oralname$ = "'filestem$'_ch'oralChan'_LPF_airflow_normalized.Intensity"
+	else
+		oralname$ = "'filestem$'_ch'oralChan'_normalized.Intensity"
+	endif
 	oralInt = Read from file: "'airflowFiles$''oralname$'"
 	
 	# Read in corresponding nasal airflow file.
@@ -156,8 +171,12 @@ for k from 1 to numfile
 	else
 		nasalcChan = 1
 	endif
-	nasalname$ = "'filestem$'_ch'nasalChan'_normalized.Intensity"
-	nasalInt = Read from file: "'airflowFiles$''nasalname$'"	
+	if "'nasalanceType$'" = "LPF"
+		nasalname$ = "'filestem$'_ch'nasalChan'_LPF_airflow_normalized.Intensity"
+	else
+		nasalname$ = "'filestem$'_ch'nasalChan'_normalized.Intensity"
+	endif
+	nasalInt = Read from file: "'airflowFiles$''nasalname$'"
 	
 	
 

@@ -17,7 +17,7 @@
 form Process two-channel airflow files: save intervals to chunked wav, TextGrid, and Intensity files.
 	
 	comment Give the location of the input sound files and TextGrids:
-		sentence rawFiles C:\Users\Tiamat\Dropbox\Research\Latinamerica_Misc\A7ingae\2023_field_trip\Saved_files\Forced_alignment\Handcorrected_data\Files_for_analysis\
+		sentence rawFiles 
 
 	comment Which IntervalTier in this TextGrid would you like to process?
 		integer Tier 1

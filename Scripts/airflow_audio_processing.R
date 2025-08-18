@@ -1,6 +1,6 @@
 ############################
 # airflow_audio_processing.R
-# Ryan Bennett, current version as of December 2024
+# Ryan Bennett, current version as of August 2025
 # https://people.ucsc.edu/~rbennett/
 # https://github.com/rbennett24/UCSC-Airflow-lab
 ############################
@@ -10,7 +10,7 @@
 # Function: processing and plotting two-channel oro-nasal airflow recordings.
 ########################
 
-# To get this to work you need to specify some filepaths, look below for:
+# To get this to work you need to specify some filepaths, look below (~ lines 173-179, and 192) for:
 # filedir
 # intensDir
 # scriptFolder
@@ -30,7 +30,7 @@
 # - Used in conjunction with a Praat script called <save_airflow_inputs.Praat>. This R script will take the output of that script as its input (short .wav files, .TextGrid files, and corresponding .Intensity files).
 #
 #
-# - The Praat .Intensity files are managed with two functions, readIntensityTrack() and convertDFtoIntensity(). These functions are defined in the R scripts readIntensity.R and df_to_intensity.R, which this script assumes are in a particular folder (see below).
+# - The Praat .Intensity files are managed with two functions, readIntensityTrack() and convertDFtoIntensity(). These functions are defined in the R scripts readIntensity.R and df_to_intensity.R, which this script assumes are in a particular folder (see <scriptFolder> variable below).
 #
 #
 # - Will save PNG and/or PDF files, along with nasalance contours in the Praat Intensity object format, in case you'd like to analyze them in Praat. See below for information about the specific subfolders this script will create in order to save these derived files.
@@ -48,7 +48,7 @@
 # I've tried to optimize other aspects of the code as well, related to e.g. reading in .wav files, computing rolling averages, etc.
 # Right now, the major bottlenecks in this code occur whenever files are saved. If you set options that will save more files, that will correspondingly slow the script more.
 # Another way of managing speed is by changing the resolution of the PNG files that are saved. Higher resolution = slower, as you'd expect. The effect
-# can be pretty significant.
+# can be pretty significant. So is changing the dimensions of each plot.
 #
 # There are probably other things that could be done for speeding up code, particularly not running operations needed for complex plots when you're only
 # making simpler plots (e.g. leaving out low-pass filtering, signal difference, etc.). Some operations occur within loops when they could probably occur 
@@ -58,49 +58,6 @@
 # the effort to track down all of the potential slowdowns just to shave off a few seconds on a script that can sometimes run for hours, 
 # when we know the major timesink is file saving.
 
-
-
-########################
-# TO DO:
-########################
-
-# - More aesthetic cleanup (colors/colorblindness, legends, linetype, alpha, etc.)
-#   * Might need more linetype differences in Channel > Simple plots for intensity vs. nasalance.
-#   * Positioning of word labels needs to be improved, and made robust to changes in word length in a way it is not right now.
-#   * For all plots where data overlaps (e.g. overlapping wave forms), make sure those plots are color-blind friendly (and just visually intelligible in general).
-#   * Content of legends should be larger and more legible.
-#   * More robustness to B&W printing/reading?
-
-# - tgSymbolRemapper() has stipulative code like tier_name=="segment" and tier_name=="word", but it needs to be integrated with the larger function,
-# using e.g. tier_num==seg.tier and tier_num==(seg.tier-1). This runs into some problems passing external variables inside the function definition
-# for tgSymbolRemapper() that I don't know how to resolve.
-
-# - Implement signal difference in file saving?
-
-# - Separate filtering for intensity vs. airflow thresholds.
-
-# - Consider whether nasalance itself should be normalized to [0,1] for each speaker after calculation.
-
-# - Relate size of smoothing window to LPF ceiling, somewhat like Praat does
-
-# - Move Praat nasalance file saving earlier in the script, just for intelligibility of operations.
- 
-# - Skip all LPF calculations when saveLPF = F and you're only making simple plots with no LPF (e.g. type = simple & simpleplot != "lpf" or whatever)
- 
-# - Skip folder creation as needed wrt to the files that you are opting to save? Needs to be improved, but is sort of there. But the script does still generate folders which can end up being left empty depending on plotting and file saving parameters chosen.
-
-# - Revisit Praat .Intensity generation in the script save_airflow_inputs.Praat. It seems to overestimate intensity in quiet regions of the signal, e.g. during oral stop closure, which has the downstream affect of compressing nasalance values to a smaller range, which in turn affects plotting.
- 
-# - Implement zero nasalance if amplitude below threshold for Praat intensity-based nasalance too -- it isn't currently done in a very effective way, it seems. More generally you need to be very careful when nasal AND/OR oral airflow are low and close to zero, you can get some funky artifacts. Set the threshold on nasal airflow alone, and not nasalance?
-#   * AND: implement this separately for nasal airflow (LPF nasalance) vs. nasal intensity? Right now a single value is passed to both airflow and intensity, but they have different distributions, and it's not super clear this makes sense.
-#   * Note also that you get lots of zero values for raw measures because waveforms cross zero a lot!
-#   * This might also be an argument for trimming data based on IQ range rather than SDs?
-      # To illustrate with plotting:
-      # airflow.df %>% filter(channel %in% c("Nasal","Nasalance") & type %in% c("Normalized intensity\ncontour (from Praat)","Nasalance\n = A\u2099/(A\u2099+A\u2092) over\n normalized intensity")) %>% ggplot()+geom_histogram(aes(x=abs(normvalue),color=channel,fill=channel)) + facet_grid(.~type)
-      # airflow.df %>% filter(channel %in% c("Nasal","Nasalance") & !(type %in% c("Normalized intensity\ncontour (from Praat)","Nasalance\n = A\u2099/(A\u2099+A\u2092) over\n normalized intensity"))) %>% ggplot()+geom_histogram(aes(x=abs(normvalue),color=channel,fill=channel)) + facet_grid(.~type)
-
-
-################
 
 
 
@@ -203,9 +160,9 @@ showColor<-function(pal){
 # Where are the raw airflow and .TextGrid files located?
 computer = ""
 
-mixtecdir <- paste0("C:/Users/",computer,"")
+mixtecdir <- paste0("C:/Users/",computer) # ETC.
 
-aingaedir <- paste0("C:/Users/",computer,"")
+aingaedir <- paste0("C:/Users/",computer) # ETC.
 
 filedir <- aingaedir # Select which directory you'd like to use
 
@@ -220,7 +177,7 @@ setwd(filedir)
 
 ##########
 # Load in functions that this script depends on.
-scriptFolder <- paste0("C:/Users/",computer,"")
+scriptFolder <- paste0("C:/Users/",computer) # ETC
 source(paste0(scriptFolder,"readIntensity.R")) # For reading Praat .Intensity files
 source(paste0(scriptFolder,"df_to_intensity.R")) # For writing Praat .Intensity files
 
@@ -272,6 +229,10 @@ if (filedir==mixtecdir){
   newLH <- "\u00B9\u00B3"
   
   tgSymbolRemapper<-function(df){
+      # Rename tiers as needed
+      df <- df %>% mutate(tier_name = case_when(tier_num==1 ~ "word",
+                                                tier_num==2 ~ "segment"))
+    
       # Remap high, low, and contour tones to raised numbers (3, 1, 31, 13),
       # and strip out ligatures from affricates and diphthongs.
       # For symbols that are already encoded
@@ -332,7 +293,11 @@ if (filedir==mixtecdir){
       # give it mid tone (raised 2).
       # Limit to segment-level transcriptions.
       df.new <- df.new %>% mutate(text = case_when(.default = text,
-                                  tier_name=="segment"~str_replace_all(text,paste0("([aeiou]",nassymbol,"?)([aeiou]|\b|$)"),"\\1\u00B2")))
+                                  tier_name=="segment"~str_replace_all(text,
+                                              paste0("([aeiou]",nassymbol,"?)([aeiou]",nassymbol,"?)"),"\\1\u00B2\\2")))
+      df.new <- df.new %>% mutate(text = case_when(.default = text,
+                            tier_name=="segment"~str_replace_all(text,
+                                        paste0("([aeiou]",nassymbol,"?)(\b|$)"),"\\1\u00B2")))
       
       # Strip initial numbers off words
       df.new <- df.new %>% mutate(text = case_when(.default = text,
@@ -368,17 +333,22 @@ if (filedir==mixtecdir){
 # Taken from a7ingae_airflow_analysis.R
 nasalC <- c("m","ɱ","n","ɳ","ɲ","ŋ","ɴ") # Could of course add more here; A'ingae only has /m n ɲ/
 prenasalC <- c("mb","ᵐb","nd","ⁿd","ndz","ⁿdz","ndʒ","ⁿdʒ","ng","ŋg","ᵑɡ","ⁿg",
-               "mp","ᵐp","nt","ⁿt","nts","ⁿts","ntʃ","ⁿtʃ","nk","ŋk","ᵑk","ⁿk") # Could of course add more here.
+               "mp","ᵐp","nt","ⁿt","nts","ⁿts","ntʃ","ⁿtʃ","nk","ŋk","ᵑk","ⁿk",
+               "nt͡s","ⁿt͡s","nt͡ʃ","ⁿt͡ʃ","ntsʲ","ⁿtsʲ","nt͡sʲ","ⁿt͡sʲ" # For Mixtec coding
+               ) # Could of course add more here, including more tiebars like m͡b etc.
 oralV <- c("a","i","e","o","u","ɨ")
 nasalV <- c("ã","ĩ","ẽ","õ","ũ","ɨ̃") # All atomic nasal vowel symbols
+approximants <- c("j","w","ʋ","ɰ","r","ɾ","ɹ","l") # Some relevant approximants; there obviously could be more
+glides <- c("j","w","ʋ","ɰ") # Some relevant glides; there obviously could be more
 if (filedir==mixtecdir){
-  justPlotSegs <- c(nasalC,prenasalC,oralV,nasalV,"h","ʔ")
+  justPlotSegs <- c(nasalC,prenasalC,oralV,nasalV,"h","ʔ",glides)
 } else if (filedir==aingaedir){
-  justPlotSegs <- c(nasalC,prenasalC,oralV,nasalV,"h","ʔ")
+  justPlotSegs <- c(nasalC,prenasalC,oralV,nasalV,"h","ʔ",glides)
 } else {
   justPlotSegs <- c("") # Default, plot everything.
 }
 segFilterPattern<-paste0(justPlotSegs,collapse="|")
+# segFilterPattern <- ".*" # If you want to include all segments
 
 
 
@@ -389,19 +359,23 @@ segFilterPattern<-paste0(justPlotSegs,collapse="|")
 processAirflow<-function(plottype=c("channel","type","nasalance","all"), # Choose what kind of plot(s) you want to save. Should default to "channel".
                          simpleplot=T, # Simple plots, or complex ones? Should default to "simple", which will be overridden by plottype="all"
                          simpleNasalanceType=c("praat","lpf","rsd"), # When making simple plots, draw intensity + nasalance based on Praat intensity, LPF signal, or raw signal difference?
+                         convertdBtoPa = T, # Convert Praat Intensity files from dB to Pa before calculating nasalance,
+                                            # or doing other processing (including normalization)?
+                                            # https://www.fon.hum.uva.nl/praat/manual/Intensity.html
+                                            # https://groups.io/g/Praat-Users-List/topic/intensity_in_rms_vs/58557644
                          filterCeiling=280, # Height of low-pass filter in Hz. 250-300 is pretty good, being mindful of speaker f0.
                                             # 200 should filter out F1 and above but retain most pitch
-                                            # 40-50 should mostly give true DC signals (i.e. aperiodic airflow,                                                                                        # most salient in voiceless regions), assuming that those very low
+                                            # 40-50 should mostly give true DC signals (i.e. aperiodic airflow,                                                                             # most salient in voiceless regions), assuming that those very low
                                             # frequency components were actually recorded to begin with.
-                         trim.thresh=6, # When normalizing airflow and intensity, remove all tokens with n # of standard
+                         trim.thresh=6, # When normalizing airflow and intensity, remove all points with n # of standard
                                         # deviations from mean before normalization (within each measurement type separately).
                                         # Set at something high, like 100, if you don't want any trimming to take place.
                                         # If this is too low, waveform peaks will all get flattened out at ceiling/floor!
                                         # Trial-and-error exploration suggests that something like 6 or 7 is a good limit.
-                         nasal.amp.minimum = 0.05, # Return NA whenever strength of range-normalized nasal airflow is weak or zero.
+                         nasal.amp.minimum = 0.01, # Return NA whenever strength of range-normalized nasal airflow is weak or zero.
                                                   # Calculated below relative to abs(Nasal) which is in [0,1] for normalized intensity/amplitude.
                                                   # 0.015-0.2 seems reasonable.
-                         smoothwindowsizeMS = 9, # When smoothing for LPF nasalance, how big should the window be (in ms) for averaging? 10-20 seems reasonable.
+                         smoothwindowsizeMS = 11, # When smoothing for LPF nasalance, how big should the window be (in ms) for averaging? 10-20 seems reasonable.
                          vec.of.wavs=wav.list, # Input list of .wavs to process
                                                # Should all have associated TextGrids with same base filename (minus file extension)
                          nasal.chan=2, # Which channel in airflow recordings is nasal airflow?
@@ -410,9 +384,9 @@ processAirflow<-function(plottype=c("channel","type","nasalance","all"), # Choos
                                      # This script assumes that there's a word-level transcription on the tier immediately above this.
                          saveDir=filedir, # Where do you want to save output image files?
                          imageSaveType=c("png","pdf","both"), # What format should images be saved in?
-                         savePraatNas = F, # Do you want to save both normalized airflow and nasalance
+                         savePraatNas = T, # Do you want to save both normalized airflow and nasalance
                                            # measured from input Praat .Intensity files as output Praat .Intensity files?
-                         saveLPF = F # Do you want to save smoothed LPF intensity and nasalance as output Praat .Intensity files?
+                         saveLPF = F # Do you want to save smoothed LPF intensity and LPF nasalance as output Praat .Intensity files?
                          ){
 
   # Start timer for total time of script
@@ -539,7 +513,7 @@ processAirflow<-function(plottype=c("channel","type","nasalance","all"), # Choos
       # Convert samples into times
       # Add waveform type
       # Add file and speaker information, along with the timestamp of the end of the file.
-      origrec = paste0("Original recording\n","(",srate,"Hz sampling rate)")
+      origrec = paste0("Normalized acoustic waveform\n","(",srate,"Hz sampling rate)")
       filtrec = paste0("Low-pass filtered\n","(",filterCeiling,"Hz threshold)")
       intensrec = paste0("Normalized intensity\ncontour (from Praat)")
       
@@ -600,6 +574,11 @@ processAirflow<-function(plottype=c("channel","type","nasalance","all"), # Choos
   
       oralIntens <- oralIntensRaw %>% mutate(channel = "Oral",type = intensrec,
                                              speaker=spk.code,item=item.code,item.number=item.num,file=wav,sampling.rate=srate,bit.depth=bdepth)
+      
+      if (convertdBtoPa == T){
+        nasalIntens <- nasalIntens %>% mutate(ampvalue = 2 * 10^-5 * 10 ^ (ampvalue / 20))
+        oralIntens <- oralIntens %>% mutate(ampvalue = 2 * 10^-5 * 10 ^ (ampvalue / 20))
+      }
       
   
       ####################
@@ -768,7 +747,7 @@ processAirflow<-function(plottype=c("channel","type","nasalance","all"), # Choos
     # Save LPF airflow and nasalance
     # No rbind/bind_rows() call in this for-loop, so it shouldn't be a bottleneck
     if (saveLPF==T){
-      cat("\t","\u21B3 Saving LFP airflow and nasalance values as Praat .Intensity files.","\n")
+      cat("\t","\u21B3 Saving LPF airflow and nasalance values as Praat .Intensity files.","\n")
       tic() # Start the stopwatch
       for (wav in vec.of.wavs.spk){
         nasalIntNormOut<-subset(nasalanceLP,file==wav & channel == "Nasal")[c("second","rollingavgNasal","fileend")]
