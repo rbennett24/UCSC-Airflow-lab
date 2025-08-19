@@ -1,7 +1,16 @@
 ***
 If you use scripts or other resources shared here, please cite them as:
 
-	Ryan Bennett, Shen Aguinda, Hugo Lucitante, and Scott AnderBois. 2025. Phonetic evidence for contextual underspecification of nasality in A’ingae. Unpublished manuscript.
+	Ryan Bennett, Shen Aguinda, Hugo Lucitante, and Scott AnderBois. 2025. Phonetic evidence for contextual underspecification of nasality in A'ingae. Unpublished ms.
+	
+BibTeX:
+
+	@misc{Bennett_etal_A7ingae_nasal2025,
+		title={Phonetic evidence for contextual underspecification of nasality in A'ingae}.
+		author={Ryan Bennett and Shen Aguinda and Hugo Lucitante and Scott AnderBois},
+		howpublished={Unpublished ms.},
+		year={2025},
+	}
 
 ***
 Generally, you'll run scripts in the following order:
