@@ -1,4 +1,9 @@
 ***
+If you use scripts or other resources shared here, please cite them as:
+
+	Ryan Bennett, Shen Aguinda, Hugo Lucitante, and Scott AnderBois. 2025. Phonetic evidence for contextual underspecification of nasality in A’ingae. Unpublished manuscript.
+
+***
 Generally, you'll run scripts in the following order:
 1. save_airflow_inputs.Praat
 2. airflow_audio_processing.R (which depends on readIntensity.R and df_to_intensity.R)
